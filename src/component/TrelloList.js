@@ -2,21 +2,33 @@ import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import TrelloCard from "./TrelloCard";
 import TrelloActionButton from "./TrelloActionButton";
+import { Droppable } from "react-beautiful-dnd";
 
-const TrelloList = ({ title, card }) => {
+const TrelloList = ({ title, card, listID }) => {
   return (
-    <div className={css(styles.container)}>
-      <h4>{title}</h4>
-      {card.map(card => (
-        <TrelloCard
-          key={card.id}
-          text={card.text}
-          title={card.title}
-          card={card.card}
-        />
-      ))}
-      <TrelloActionButton />
-    </div>
+    <Droppable droppableId={String(listID)}>
+      {provided => (
+        <div
+          {...provided.droppableProps}
+          ref={provided.innerRef}
+          className={css(styles.container)}
+        >
+          <h4>{title}</h4>
+          {card.map((card, index) => (
+            <TrelloCard
+              index={index}
+              key={card.id}
+              text={card.text}
+              title={card.title}
+              card={card.card}
+              id={card.id}
+            />
+          ))}
+          <TrelloActionButton listID={listID} />
+          {provided.placeholder}
+        </div>
+      )}
+    </Droppable>
   );
 };
 
